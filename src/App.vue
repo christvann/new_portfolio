@@ -27,7 +27,7 @@
         >
         <a
   href="#work"
-  @click="isMenuOpen = false; activeSection = 'work'" 
+  @click="isMenuOpen = false; activeSection = 'work'"
   :class="['nav-item', { active: activeSection === 'work' }]"
 >
   Work
@@ -283,24 +283,24 @@ let isDeleting = false
 let typeSpeed = 150
 
 const handleScroll = () => {
-  const sections = ['about', 'work', 'projects', 'contact'];
-  
+  const sections = ['about', 'work', 'projects', 'contact']
+
   // Ambil posisi tengah layar sebagai pemicu agar lebih akurat di HP
-  const triggerPoint = window.innerHeight / 2;
+  const triggerPoint = window.innerHeight / 2
 
   sections.forEach((id) => {
-    const el = document.getElementById(id);
+    const el = document.getElementById(id)
     if (el) {
-      const rect = el.getBoundingClientRect();
-      
+      const rect = el.getBoundingClientRect()
+
       // Jika bagian atas section sudah melewati tengah layar
       // dan bagian bawahnya masih di bawah tengah layar
       if (rect.top <= triggerPoint && rect.bottom >= triggerPoint) {
-        activeSection.value = id;
+        activeSection.value = id
       }
     }
-  });
-};
+  })
+}
 
 const typeEffect = () => {
   const fullText = roles[roleIndex]
@@ -326,7 +326,6 @@ const typeEffect = () => {
 
   setTimeout(typeEffect, typeSpeed)
 }
-
 
 onMounted(() => {
   console.log('Typewriter started!')
@@ -560,7 +559,7 @@ const skills = ref([
   { name: 'MySQL', icon: 'devicon-mysql-plain colored' },
   { name: 'Node.js', icon: 'devicon-nodejs-plain colored' },
   { name: 'Figma', icon: 'devicon-figma-plain colored' },
-  { name: 'Machine Learning', icon: 'devicon-tensorflow-original colored' },
+  { name: 'CNN', icon: 'devicon-tensorflow-original colored' },
 ])
 
 import diamondImg from '@/assets/diamond.png'
@@ -1117,12 +1116,15 @@ p,
   width: 100%;
   height: 100%;
   z-index: 1;
+  border-radius: inherit;
+  overflow: hidden;
 }
 
 .project-img-display {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   filter: brightness(0.4);
   transition: all 0.7s ease;
 }
@@ -1148,6 +1150,7 @@ p,
     /* Mulai transparan di tengah */ transparent 100% /* Benar-benar bening di atas gambar */
   );
   z-index: 2;
+  border-radius: inherit;
 }
 
 /* Penyesuaian konten agar rapi */
@@ -1159,6 +1162,11 @@ p,
   overflow: hidden;
   display: grid;
   place-items: stretch; /* Memastikan isi memenuhi grid */
+  border-radius: 20px;
+  overflow: hidden;
+  display: grid;
+  place-items: stretch;
+  border: 1px solid rgba(230, 0, 0, 0.2);
 }
 
 .project-details-overlay {
@@ -1355,7 +1363,7 @@ p,
     position: absolute !important;
     top: 65%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(1) !important;
+    transform: translate(-50%, -50%) scale(1.5) !important;
     width: 90vw !important;
     height: 90vw !important;
     max-width: 350px !important;
