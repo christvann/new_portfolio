@@ -26,11 +26,12 @@
           >About</a
         >
         <a
-          href="#work"
-          @click="isMenuOpen = false"
-          :class="['nav-item', { active: activeSection === 'work' }]"
-          >Work</a
-        >
+  href="#work"
+  @click="isMenuOpen = false; activeSection = 'work'" 
+  :class="['nav-item', { active: activeSection === 'work' }]"
+>
+  Work
+</a>
         <a
           href="#projects"
           @click="isMenuOpen = false"
@@ -281,6 +282,26 @@ let charIndex = 0
 let isDeleting = false
 let typeSpeed = 150
 
+const handleScroll = () => {
+  const sections = ['about', 'work', 'projects', 'contact'];
+  
+  // Ambil posisi tengah layar sebagai pemicu agar lebih akurat di HP
+  const triggerPoint = window.innerHeight / 2;
+
+  sections.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      
+      // Jika bagian atas section sudah melewati tengah layar
+      // dan bagian bawahnya masih di bawah tengah layar
+      if (rect.top <= triggerPoint && rect.bottom >= triggerPoint) {
+        activeSection.value = id;
+      }
+    }
+  });
+};
+
 const typeEffect = () => {
   const fullText = roles[roleIndex]
 
@@ -305,6 +326,7 @@ const typeEffect = () => {
 
   setTimeout(typeEffect, typeSpeed)
 }
+
 
 onMounted(() => {
   console.log('Typewriter started!')
@@ -642,8 +664,18 @@ const handleSwipeGesture = () => {
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-html {
-  scroll-behavior: smooth;
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Kunci scroll horizontal */
+  position: relative;
 }
 
 .menu-toggle {
@@ -666,6 +698,7 @@ html {
   .menu-toggle {
     display: flex; /* Munculkan di HP */
   }
+
   .nav-container {
     display: flex;
     justify-content: space-between;
@@ -701,7 +734,7 @@ html {
     /* Animasi muncul (Fade & Slide) */
     opacity: 0;
     transform: translateY(-20px) scale(0.9);
-    pointer-events: none; /* Klik tidak tembus saat tertutup */
+    pointer-events: none;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     z-index: 1000;
   }
@@ -709,8 +742,10 @@ html {
   /* 3. Saat Menu Aktif */
   .nav-links.active {
     opacity: 1;
+    display: flex;
     transform: translateY(0) scale(1);
     pointer-events: auto;
+    z-index: 2000;
   }
 
   .nav-item {
@@ -719,6 +754,7 @@ html {
     width: 100%;
     text-align: left; /* Rata kiri di dalam kotak */
     border-radius: 0;
+    z-index: 2001;
   }
 
   /* Hilangkan garis bawah active di mobile agar lebih clean */
@@ -727,8 +763,11 @@ html {
   }
 
   .nav-item.active {
-    background: rgba(230, 0, 0, 0.1);
-    color: #e60000;
+    background: rgba(230, 0, 0, 0.2) !important; /* Beri sedikit opasitas lebih tinggi */
+    color: #ff0000 !important;
+    border-left: 4px solid #e60000; /* Beri indikator garis di kiri agar lebih tegas */
+    padding-left: 21px; /* Kompensasi untuk border-left agar teks tidak geser jauh */
+    transition: all 0.3s ease;
   }
 
   /* Animasi Burger ke X */
@@ -1262,7 +1301,7 @@ p,
   max-width: 800px; /* Jaga agar bio tidak terlalu melebar ke samping */
 }
 
-/* Kontainer 3D baru kita */
+/* Kontainer 3D baru */
 .canvas-3d-container {
   position: absolute !important;
   top: 55%;
@@ -1270,7 +1309,7 @@ p,
   transform: translate(-50%, -50%) scale(0.9); /* Kunci centering di tengah */
   width: 100%;
   height: 100%;
-  max-width: 800px;
+  max-width: 100vw;
   max-height: 800px;
   z-index: 1; /* Di belakang teks */
   opacity: 0.8; /* Sesuaikan transparansi agar teks tetap terbaca jelas */
@@ -1314,11 +1353,13 @@ p,
   /* 1. BUAT BOLA 3D JADI BACKGROUND */
   .canvas-3d-container {
     position: absolute !important;
-    top: 55%;
+    top: 65%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(0.9);
-    width: 100% !important;
-    height: 100% !important;
+    transform: translate(-50%, -50%) scale(1) !important;
+    width: 90vw !important;
+    height: 90vw !important;
+    max-width: 350px !important;
+    max-height: 350px !important;
     z-index: 1 !important; /* Di belakang teks */
     opacity: 0.6; /* Kurangi sedikit kepekatan agar teks bio mudah dibaca */
     pointer-events: none; /* Supaya jempol user tidak sengaja memutar bola saat mau scroll */
@@ -1376,42 +1417,52 @@ p,
   z-index: 20;
 }
 
-.skills-grid {
-  display: grid;
-  /* Membuat 3 kolom yang sama lebar di PC */
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  /* Jaga agar tetap di tengah jika container lebih lebar */
-  max-width: 800px;
-  margin: 0 auto;
-}
-@media (max-width: 480px) {
-  .skills-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
+/* --- SKILLS SECTION --- */
 .skills-section {
   margin-top: 60px;
+  padding: 0 20px; /* Tambahkan padding di section agar grid tidak mepet layar HP */
   position: relative;
   z-index: 10;
 }
 
+.skills-grid {
+  display: grid;
+  /* Menggunakan minmax agar lebih fleksibel di berbagai ukuran layar */
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* --- GLOW CARD (KARTU SKILL) --- */
 .glow-card {
   display: flex;
   align-items: center;
+  justify-content: flex-start; /* Pastikan konten rata kiri */
   gap: 12px;
   background: rgba(20, 20, 20, 0.6);
   border: 1px solid rgba(230, 0, 0, 0.1);
-  padding: 16px 32px;
-  border-radius: 8px;
+  padding: 12px 16px; /* DIKECILKAN: Dari 32px ke 16px agar muat di HP */
+  border-radius: 10px;
   font-weight: 500;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
   cursor: pointer;
+
+  /* KUNCI: Agar border tidak pecah/terpotong */
+  box-sizing: border-box;
+  width: 100%;
+  overflow: hidden; /* Potong konten jika meluber */
 }
+
 .skill-icon {
-  font-size: 1.8rem; /* Mengatur besar kecilnya logo */
+  font-size: 1.5rem; /* Sedikit diperkecil agar proporsional */
+  flex-shrink: 0; /* Cegah ikon gepeng saat teks panjang */
+}
+
+.glow-card span {
+  font-size: 0.9rem;
+  white-space: nowrap; /* Cegah teks turun ke bawah jika tidak muat */
 }
 
 .glow-card:hover {
@@ -1420,6 +1471,28 @@ p,
     0 0 20px rgba(230, 0, 0, 0.3),
     inset 0 0 10px rgba(230, 0, 0, 0.3);
   transform: translateY(-3px);
+}
+
+/* --- RESPONSIVE MOBILE (KHUSUS HP) --- */
+@media (max-width: 480px) {
+  .skills-grid {
+    /* Paksa jadi 2 kolom yang presisi */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .glow-card {
+    padding: 10px 12px; /* Lebih kecil lagi di HP sangat kecil */
+    gap: 8px;
+  }
+
+  .skill-icon {
+    font-size: 1.2rem;
+  }
+
+  .glow-card span {
+    font-size: 0.8rem;
+  }
 }
 
 .carousel-container {
