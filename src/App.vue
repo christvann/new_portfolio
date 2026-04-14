@@ -126,7 +126,7 @@
                 <h4 class="project-name">{{ project.name }}</h4>
                 <p class="project-desc">{{ project.description }}</p>
 
-                <div class="project-footer">
+                <div class="project-footer" style="margin-top: 15px">
                   <a
                     :href="project.github"
                     target="_blank"
@@ -893,14 +893,15 @@ p,
 
 <style scoped>
 .project-3d-card {
+  width: 280px !important;
   background: transparent !important;
   position: relative;
   overflow: hidden;
   border-radius: 20px;
   border: none !important;
-  /* Pastikan kartu punya tinggi yang cukup */
   height: 450px;
   box-shadow: none;
+  transform: translateX(-50%) !important;
 }
 
 /* Container Gambar di dalam Kartu */
@@ -961,13 +962,15 @@ p,
   flex-direction: column;
   justify-content: flex-end; /* Teks tetap di bawah */
 
-  padding: 30px 25px 40px 25px; /* Kurangi padding bawah (20px) agar ikon naik */
+  padding: 15px !important;
 
   background: transparent !important;
   border-radius: 15px;
 
   text-align: left;
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 
   /* Animasi muncul (tetap sama) */
   opacity: 0;
@@ -989,21 +992,21 @@ p,
 .project-name {
   font-family: 'Inter', sans-serif;
   font-weight: 900;
-  font-size: 1.8rem;
+  font-size: 1.2rem !important;
   text-transform: uppercase;
   color: #fff;
-  margin: 5px 0 5px 0; /* Kurangi margin bottom (5px) */
+  margin: 5px 0 !important;
   letter-spacing: -1px;
 }
 
 .project-desc {
-  font-size: 0.85rem;
+  font-size: 0.85rem !important;
   color: rgba(255, 255, 255, 0.8);
 
   /* --- PERBAIKAN: KURANGI MARGIN --- */
   margin-bottom: 10px; /* Jarak ke ikon GitHub (kurangi dari 15px) */
 
-  line-height: 1.5;
+  line-height: 1.3 !important;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -1019,14 +1022,15 @@ p,
 }
 
 .project-footer {
+  padding: 10px !important;
+  margin-top: auto;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  /* Pastikan tidak ada margin-top di sini jika sudah ada margin-bottom di project-desc */
 }
 
 .github-icon-link {
-  font-size: 1.8rem;
+  font-size: 1.8rem !important;
   color: #fff;
   transition: all 0.3s ease;
   display: inline-block;
@@ -1086,6 +1090,22 @@ p,
 
 /* Penyesuaian responsif untuk layar HP */
 @media (max-width: 768px) {
+  nav {
+    padding: 10px 20px !important;
+    height: auto !important;
+  }
+
+  .navbar-logo {
+    font-size: 1.2rem !important;
+  }
+
+  /* 2. Memperbaiki Kontainer Carousel agar di Tengah */
+  .carousel-3d-container {
+    height: 450px !important; /* Kurangi tinggi agar tidak meluber */
+    perspective: 800px !important; /* Sesuaikan perspektif */
+    margin-top: 20px;
+  }
+
   .hero-section {
     flex-direction: column-reverse; /* Teks di bawah, 3D di atas saat di HP */
     text-align: center;
