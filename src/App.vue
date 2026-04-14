@@ -126,7 +126,7 @@
                 <h4 class="project-name">{{ project.name }}</h4>
                 <p class="project-desc">{{ project.description }}</p>
 
-                <div class="project-footer" style="margin-top: 15px">
+                <div class="project-footer">
                   <a
                     :href="project.github"
                     target="_blank"
@@ -161,7 +161,7 @@
           <h2 class="contact-title">LET'S <br /><span class="highlight">CONNECT</span></h2>
           <p class="contact-subtitle">
             Have a project in mind or just want to say hi? <br />
-            Feel free to reach out through any of these platforms below.
+            Feel free to reach out through any of the platforms below.
           </p>
 
           <div class="social-links">
@@ -240,31 +240,31 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 const cardRefs = ref([])
 
-const startX = ref(0)
-const isDragging = ref(false)
+const startX = ref(0);
+const isDragging = ref(false);
 
 const handleMouseDown = (e) => {
-  isDragging.value = true
-  startX.value = e.clientX
-}
+  isDragging.value = true;
+  startX.value = e.clientX;
+};
 
 const handleMouseUp = (e) => {
-  if (!isDragging.value) return
-
-  const endX = e.clientX
-  const difference = startX.value - endX
-  const threshold = 50 // Jarak geser minimal 50px
+  if (!isDragging.value) return;
+  
+  const endX = e.clientX;
+  const difference = startX.value - endX;
+  const threshold = 50; // Jarak geser minimal 50px
 
   if (Math.abs(difference) > threshold) {
     if (difference > 0) {
-      nextSlide()
+      nextSlide();
     } else {
-      prevSlide()
+      prevSlide();
     }
   }
-
-  isDragging.value = false
-}
+  
+  isDragging.value = false;
+};
 
 const handleMouseMove = (e, index) => {
   const card = cardRefs.value[index]
@@ -734,7 +734,7 @@ p,
 /* KIRI: TYPOGRAPHY */
 .contact-title {
   font-family: 'Inter', sans-serif;
-  font-size: clamp(3rem, 10vw, 6rem);
+  font-size: 6rem;
   font-weight: 900;
   line-height: 0.9;
   margin: 0;
@@ -893,15 +893,14 @@ p,
 
 <style scoped>
 .project-3d-card {
-  width: 280px !important;
   background: transparent !important;
   position: relative;
   overflow: hidden;
   border-radius: 20px;
   border: none !important;
+  /* Pastikan kartu punya tinggi yang cukup */
   height: 450px;
   box-shadow: none;
-  transform: translateX(-50%) !important;
 }
 
 /* Container Gambar di dalam Kartu */
@@ -918,7 +917,6 @@ p,
   object-fit: cover;
   filter: brightness(0.4);
   transition: all 0.7s ease;
-  pointer-events: none;
 }
 
 /* Efek Hover: Gambar nge-zoom dikit */
@@ -962,15 +960,13 @@ p,
   flex-direction: column;
   justify-content: flex-end; /* Teks tetap di bawah */
 
-  padding: 15px !important;
+  padding: 30px 25px 40px 25px; /* Kurangi padding bawah (20px) agar ikon naik */
 
   background: transparent !important;
   border-radius: 15px;
 
   text-align: left;
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 
   /* Animasi muncul (tetap sama) */
   opacity: 0;
@@ -992,21 +988,21 @@ p,
 .project-name {
   font-family: 'Inter', sans-serif;
   font-weight: 900;
-  font-size: 1.2rem !important;
+  font-size: 1.8rem;
   text-transform: uppercase;
   color: #fff;
-  margin: 5px 0 !important;
+  margin: 5px 0 5px 0; /* Kurangi margin bottom (5px) */
   letter-spacing: -1px;
 }
 
 .project-desc {
-  font-size: 0.85rem !important;
+  font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.8);
 
   /* --- PERBAIKAN: KURANGI MARGIN --- */
   margin-bottom: 10px; /* Jarak ke ikon GitHub (kurangi dari 15px) */
 
-  line-height: 1.3 !important;
+  line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -1022,15 +1018,14 @@ p,
 }
 
 .project-footer {
-  padding: 10px !important;
-  margin-top: auto;
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  /* Pastikan tidak ada margin-top di sini jika sudah ada margin-bottom di project-desc */
 }
 
 .github-icon-link {
-  font-size: 1.8rem !important;
+  font-size: 1.8rem;
   color: #fff;
   transition: all 0.3s ease;
   display: inline-block;
@@ -1064,7 +1059,7 @@ p,
 }
 
 .hero-section {
-  min-height: 100dvh;
+  min-height: 80vh;
   display: flex;
   align-items: center;
   justify-content: space-between; /* Memisahkan teks ke kiri, 3D ke kanan */
@@ -1090,22 +1085,6 @@ p,
 
 /* Penyesuaian responsif untuk layar HP */
 @media (max-width: 768px) {
-  nav {
-    padding: 10px 20px !important;
-    height: auto !important;
-  }
-
-  .navbar-logo {
-    font-size: 1.2rem !important;
-  }
-
-  /* 2. Memperbaiki Kontainer Carousel agar di Tengah */
-  .carousel-3d-container {
-    height: 450px !important; /* Kurangi tinggi agar tidak meluber */
-    perspective: 800px !important; /* Sesuaikan perspektif */
-    margin-top: 20px;
-  }
-
   .hero-section {
     flex-direction: column-reverse; /* Teks di bawah, 3D di atas saat di HP */
     text-align: center;
@@ -1279,7 +1258,7 @@ p,
 }
 
 .carousel-3d-wrapper:active {
-  cursor: grabbing;
+  cursor: grabbing; /* Tangan mengepal saat menekan */
 }
 
 .carousel-3d-container {
