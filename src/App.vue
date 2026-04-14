@@ -8,13 +8,39 @@
         <span class="logo-text">Ivan Christian</span>
       </div>
 
-      <div class="nav-links">
-        <a href="#about" :class="['nav-item', { active: activeSection === 'about' }]">About</a>
-        <a href="#work" :class="['nav-item', { active: activeSection === 'work' }]">Work</a>
-        <a href="#projects" :class="['nav-item', { active: activeSection === 'projects' }]"
+      <div
+        class="menu-toggle"
+        @click="isMenuOpen = !isMenuOpen"
+        :class="{ 'is-active': isMenuOpen }"
+      >
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+
+      <div :class="['nav-links', { active: isMenuOpen }]">
+        <a
+          href="#about"
+          @click="isMenuOpen = false"
+          :class="['nav-item', { active: activeSection === 'about' }]"
+          >About</a
+        >
+        <a
+          href="#work"
+          @click="isMenuOpen = false"
+          :class="['nav-item', { active: activeSection === 'work' }]"
+          >Work</a
+        >
+        <a
+          href="#projects"
+          @click="isMenuOpen = false"
+          :class="['nav-item', { active: activeSection === 'projects' }]"
           >Projects</a
         >
-        <a href="#contact" :class="['nav-item', { active: activeSection === 'contact' }]"
+        <a
+          href="#contact"
+          @click="isMenuOpen = false"
+          :class="['nav-item', { active: activeSection === 'contact' }]"
           >Contact</a
         >
       </div>
@@ -29,7 +55,10 @@
   <main class="container">
     <section id="about" class="hero-section">
       <div class="hero-content">
-        <h2 class="role-title">Frontend Dev | Aspiring Fullstack Dev | AI Researcher</h2>
+        <h2 class="role-title">
+          <span class="typewriter-text">{{ currentText }}</span>
+          <span class="cursor">|</span>
+        </h2>
         <h1 class="main-name">Ivan Christian</h1>
         <p class="bio">
           Informatics Engineering graduate from <strong>Institut Teknologi PLN</strong> with a GPA
@@ -160,8 +189,8 @@
         <div class="contact-info">
           <h2 class="contact-title">LET'S <br /><span class="highlight">CONNECT</span></h2>
           <p class="contact-subtitle">
-            Have a project in mind or just want to say hi? <br />
-            Feel free to reach out through any of the platforms below.
+            Have a project in mind or just wanna say hi? <br />
+            Feel free to reach out through any of these platforms below.
           </p>
 
           <div class="social-links">
@@ -240,31 +269,70 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 const cardRefs = ref([])
 
-const startX = ref(0);
-const isDragging = ref(false);
+const isMenuOpen = ref(false)
+
+const startX = ref(0)
+const isDragging = ref(false)
+
+const roles = ['Frontend Dev', 'Aspiring Fullstack Dev', 'AI Researcher']
+const currentText = ref('')
+let roleIndex = 0
+let charIndex = 0
+let isDeleting = false
+let typeSpeed = 150
+
+const typeEffect = () => {
+  const fullText = roles[roleIndex]
+
+  if (isDeleting) {
+    currentText.value = fullText.substring(0, charIndex - 1)
+    charIndex--
+    typeSpeed = 50
+  } else {
+    currentText.value = fullText.substring(0, charIndex + 1)
+    charIndex++
+    typeSpeed = 150
+  }
+
+  if (!isDeleting && charIndex === fullText.length) {
+    isDeleting = true
+    typeSpeed = 2000 // Jeda saat kata selesai
+  } else if (isDeleting && charIndex === 0) {
+    isDeleting = false
+    roleIndex = (roleIndex + 1) % roles.length
+    typeSpeed = 500
+  }
+
+  setTimeout(typeEffect, typeSpeed)
+}
+
+onMounted(() => {
+  console.log('Typewriter started!')
+  typeEffect()
+})
 
 const handleMouseDown = (e) => {
-  isDragging.value = true;
-  startX.value = e.clientX;
-};
+  isDragging.value = true
+  startX.value = e.clientX
+}
 
 const handleMouseUp = (e) => {
-  if (!isDragging.value) return;
-  
-  const endX = e.clientX;
-  const difference = startX.value - endX;
-  const threshold = 50; // Jarak geser minimal 50px
+  if (!isDragging.value) return
+
+  const endX = e.clientX
+  const difference = startX.value - endX
+  const threshold = 50 // Jarak geser minimal 50px
 
   if (Math.abs(difference) > threshold) {
     if (difference > 0) {
-      nextSlide();
+      nextSlide()
     } else {
-      prevSlide();
+      prevSlide()
     }
   }
-  
-  isDragging.value = false;
-};
+
+  isDragging.value = false
+}
 
 const handleMouseMove = (e, index) => {
   const card = cardRefs.value[index]
@@ -572,10 +640,109 @@ const handleSwipeGesture = () => {
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 html {
   scroll-behavior: smooth;
+}
+
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+  z-index: 1001;
+}
+
+.menu-toggle .bar {
+  width: 25px;
+  height: 2px;
+  background-color: white;
+  transition: 0.3s;
+}
+
+/* --- Mobile Style --- */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: flex; /* Munculkan di HP */
+  }
+  .nav-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 15px 25px;
+    position: relative;
+  }
+
+  .nav-links {
+    position: absolute; /* Bukan fixed, agar relatif terhadap navbar */
+    top: 80px; /* Jarak dari atas navbar */
+    right: 20px; /* Jarak dari pinggir kanan */
+
+    /* Ukuran kotak menu */
+    width: 200px;
+    height: auto; /* Tinggi mengikuti jumlah menu */
+
+    /* Style Kotak (Tema Portfolio) */
+    background: rgba(15, 15, 15, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(230, 0, 0, 0.3);
+    border-radius: 15px;
+    box-shadow:
+      0 10px 30px rgba(0, 0, 0, 0.5),
+      0 0 15px rgba(230, 0, 0, 0.2);
+    overflow: hidden !important;
+
+    /* Layout Menu Vertikal */
+    flex-direction: column;
+    padding: 20px 0;
+    gap: 10px;
+
+    /* Animasi muncul (Fade & Slide) */
+    opacity: 0;
+    transform: translateY(-20px) scale(0.9);
+    pointer-events: none; /* Klik tidak tembus saat tertutup */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 1000;
+  }
+
+  /* 3. Saat Menu Aktif */
+  .nav-links.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  .nav-item {
+    font-size: 1rem;
+    padding: 12px 25px;
+    width: 100%;
+    text-align: left; /* Rata kiri di dalam kotak */
+    border-radius: 0;
+  }
+
+  /* Hilangkan garis bawah active di mobile agar lebih clean */
+  .nav-item.active::after {
+    display: none;
+  }
+
+  .nav-item.active {
+    background: rgba(230, 0, 0, 0.1);
+    color: #e60000;
+  }
+
+  /* Animasi Burger ke X */
+  .menu-toggle.is-active .bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+    background-color: #e60000;
+  }
+  .menu-toggle.is-active .bar:nth-child(2) {
+    opacity: 0;
+  }
+  .menu-toggle.is-active .bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+    background-color: #e60000;
+  }
 }
 
 .navbar {
@@ -670,8 +837,8 @@ html {
 }
 
 /* Terapkan ke seluruh elemen tanpa terkecuali */
-* {
-  font-family: 'Inter', sans-serif !important;
+:root {
+  --primary-font: 'Poppins', sans-serif;
 }
 /* Reset Global */
 body {
@@ -689,23 +856,22 @@ body {
 h1,
 h2,
 h3,
+h4,
+.logo-text,
+.nav-item,
 .section-title {
-  font-family: 'Inter', sans-serif;
-  font-weight: 800; /* Sangat Tebal */
-  letter-spacing: -0.02em; /* Sedikit dirapatkan agar terlihat modern */
-  line-height: 1.1;
-  margin-bottom: 20px;
+  font-family: var(--primary-font);
 }
 
 /* Styling Deskripsi di bawah judul */
 p,
 .exp-desc-list,
 .bio {
-  font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  line-height: 1.6;
-  color: #aaaaaa; /* Warna abu-abu sesuai gambar */
-  max-width: 800px; /* Agar tidak terlalu lebar dan enak dibaca */
+  font-family: var(--primary-font);
+  font-weight: 300; /* Lebih tipis seperti di foto biru */
+  line-height: 1.6; /* Memberi ruang antar baris */
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .contact-section {
@@ -865,7 +1031,8 @@ p,
   justify-content: center; /* Mengetengahkan konten di dalam footer */
   align-items: center;
   border-top: 1px solid rgba(255, 255, 255, 0.05); /* Garis tipis transparan */
-  margin-top: auto; /* Memastikan footer selalu nempel di paling bawah section */
+  margin-top: 50px; /* Memastikan footer selalu nempel di paling bawah section */
+  overflow: hidden;
 }
 
 .mini-footer p {
@@ -876,6 +1043,8 @@ p,
   margin: 0;
   font-weight: 300;
   opacity: 0.6;
+  text-align: center;
+  width: 100%;
 }
 
 /* Responsive */
@@ -1047,6 +1216,13 @@ p,
   z-index: 2;
 }
 
+.cursor {
+  color: #e60000;
+  font-weight: bold;
+  margin-left: 5px;
+  text-shadow: 0 0 8px #e60000;
+}
+
 .cursor-glow {
   position: fixed;
   width: 600px;
@@ -1059,49 +1235,119 @@ p,
 }
 
 .hero-section {
-  min-height: 80vh;
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Memisahkan teks ke kiri, 3D ke kanan */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  gap: 2rem;
+  justify-content: center; /* Konten teks ikut ke tengah */
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  padding: 0 20px;
 }
 
 .hero-content {
-  flex: 1; /* Teks mengambil sisa ruang */
+  position: relative;
   max-width: 600px;
+  z-index: 100;
+  text-align: left;
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10; /* Pastikan teks di depan bola */
+  text-align: center; /* Ubah ke center agar seimbang dengan bola */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Mengetengahkan isi teks (Typewriter, Nama, Bio) */
+  max-width: 800px; /* Jaga agar bio tidak terlalu melebar ke samping */
 }
 
 /* Kontainer 3D baru kita */
 .canvas-3d-container {
-  width: 500px;
-  height: 500px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* Tambahkan efek glow di belakang 3D-nya */
-  background: radial-gradient(circle, rgba(230, 0, 0, 0.1) 0%, transparent 60%);
+  position: absolute !important;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9); /* Kunci centering di tengah */
+  width: 100%;
+  height: 100%;
+  max-width: 800px;
+  max-height: 800px;
+  z-index: 1; /* Di belakang teks */
+  opacity: 0.8; /* Sesuaikan transparansi agar teks tetap terbaca jelas */
+  pointer-events: none;
 }
 
-/* Penyesuaian responsif untuk layar HP */
+/* 1. GLOBAL / DESKTOP STYLE */
+.role-title {
+  display: flex !important;
+  align-items: center;
+  justify-content: center !important;
+  min-height: 1.8rem;
+  width: 100%;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 9999; /* Sangat tinggi agar di atas bola */
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.typewriter-text {
+  font-family: 'Poppins', sans-serif;
+  color: #e60000 !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 1.1rem;
+  text-shadow: 0 0 10px rgba(230, 0, 0, 0.8);
+  display: inline-block !important;
+}
+
+/* 2. MOBILE STYLE (Wajib di bagian paling bawah) */
 @media (max-width: 768px) {
   .hero-section {
-    flex-direction: column-reverse; /* Teks di bawah, 3D di atas saat di HP */
-    text-align: center;
-    justify-content: center;
+    display: block !important; /* Gunakan block agar absolute child-nya bisa diposisikan */
+    min-height: 100vh;
+    position: relative;
+    padding: 120px 25px 40px !important;
   }
-  .canvas-3d-container {
-    width: 300px;
-    height: 300px;
-  }
-}
 
-.role-title {
-  color: #e60000;
-  font-size: 0.9rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 16px;
+  /* 1. BUAT BOLA 3D JADI BACKGROUND */
+  .canvas-3d-container {
+    position: absolute !important;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1 !important; /* Di belakang teks */
+    opacity: 0.6; /* Kurangi sedikit kepekatan agar teks bio mudah dibaca */
+    pointer-events: none; /* Supaya jempol user tidak sengaja memutar bola saat mau scroll */
+  }
+
+  /* 2. PASTIKAN KONTEN TEKS DI DEPAN */
+  .hero-content {
+    position: relative;
+    z-index: 10; /* Pastikan di atas bola */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .role-title {
+    margin-bottom: 5px !important;
+    min-height: 20px !important;
+  }
+
+  .main-name {
+    font-size: 2.5rem !important; /* Sesuaikan ukuran nama di HP */
+    margin: 10px 0 !important;
+  }
+
+  .bio {
+    margin: 0 auto;
+    text-align: center; /* Bio ikut rata tengah */
+  }
 }
 
 .main-name {
@@ -1109,6 +1355,7 @@ p,
   font-weight: 700;
   line-height: 1.1;
   margin-bottom: 24px;
+  text-align: justify;
 }
 
 .bio {
@@ -1116,23 +1363,35 @@ p,
   font-size: 1.1rem;
   line-height: 1.7;
   max-width: 700px;
+  text-align: justify;
 }
 
 .section-title {
   font-size: 2rem;
-  margin: 80px 0 40px;
+  margin: 100px 0 0px;
   font-weight: 500;
+  text-align: center;
+  padding-bottom: 90px;
+  position: relative;
+  z-index: 20;
 }
 
 .skills-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  justify-content: center;
+  display: grid;
+  /* Membuat 3 kolom yang sama lebar di PC */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  /* Jaga agar tetap di tengah jika container lebih lebar */
+  max-width: 800px;
+  margin: 0 auto;
+}
+@media (max-width: 480px) {
+  .skills-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .skills-section {
-  /* TAMBAHKAN INI: Paksa jarak aman dari bagian Experience */
   margin-top: 60px;
   position: relative;
   z-index: 10;
@@ -1358,31 +1617,48 @@ p,
 
 /* Tombol Navigasi */
 .nav-btn {
-  background: rgba(20, 20, 20, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
+  background: transparent !important;
+  border: 1px solid rgba(230, 0, 0, 0.3);
+  color: #e60000;
   font-size: 1.5rem;
   width: 50px;
   height: 50px;
   border-radius: 50%;
   cursor: pointer;
-  z-index: 10;
+  z-index: 100;
   position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   transition: all 0.3s;
   backdrop-filter: blur(5px);
 }
 
 .nav-btn:hover {
-  background: #e60000;
+  background: rgba(230, 0, 0, 0.1) !important;
   border-color: #e60000;
   box-shadow: 0 0 15px rgba(230, 0, 0, 0.5);
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .nav-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+  .nav-btn.prev {
+    left: 1%;
+  }
+  .nav-btn.next {
+    right: 1%;
+  }
 }
 
 .nav-btn.prev {
-  left: 10%;
+  left: 2%;
 }
 .nav-btn.next {
-  right: 10%;
+  right: 2%;
 }
 
 /* Indikator Titik (Dots) */
@@ -1410,26 +1686,57 @@ p,
 
 /* Responsif untuk Mobile */
 @media (max-width: 768px) {
+  /* 1. Pastikan container memberikan ruang untuk kartu di samping */
   .carousel-3d-container {
-    width: 280px;
-    height: 400px;
+    height: 550px !important; /* Sesuaikan dengan tinggi kartu auto kamu */
+    perspective: 1000px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible !important; /* Kritis: agar kartu samping tidak hilang */
   }
+
+  /* 2. Reset posisi dasar kartu di mobile */
   .project-3d-card {
-    height: 400px; /* Perkecil sedikit di HP agar tidak terlalu penuh */
+    position: absolute !important;
+    width: 75vw !important; /* Lebih kecil sedikit agar kartu samping mulai terlihat */
+    max-width: 280px;
+    height: auto !important;
+    left: 50% !important;
+    top: 50% !important;
+    /* Geser ke tengah */
+    margin-left: -140px; /* Setengah dari max-width */
+    margin-top: -225px; /* Sesuaikan dengan tinggi kartu */
+    transition:
+      transform 0.5s ease,
+      opacity 0.5s ease !important;
   }
 
-  .project-3d-card.prev {
-    transform: translateX(-40%) translateZ(-150px) rotateY(15deg);
-  }
-  .project-3d-card.next {
-    transform: translateX(40%) translateZ(-150px) rotateY(-15deg);
-  }
-  .nav-btn {
-    display: none;
+  /* 3. Atur posisi Slide Kiri (Mobile) */
+  .project-3d-card.left {
+    display: block !important; /* Munculkan kembali */
+    opacity: 0.4 !important;
+    /* Geser sedikit ke kiri, kecilkan sedikit, dan miringkan */
+    transform: translateX(-120px) translateZ(-200px) rotateY(25deg) scale(0.8) !important;
+    z-index: 1;
+    pointer-events: none; /* Biar tidak sengaja terklik saat mau klik yang tengah */
   }
 
-  .project-name {
-    font-size: 1.4rem;
+  /* 4. Atur posisi Slide Kanan (Mobile) */
+  .project-3d-card.right {
+    display: block !important; /* Munculkan kembali */
+    opacity: 0.4 !important;
+    /* Geser sedikit ke kanan, kecilkan sedikit, dan miringkan */
+    transform: translateX(120px) translateZ(-200px) rotateY(-25deg) scale(0.8) !important;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* 5. Kartu Aktif (Tengah) */
+  .project-3d-card.active {
+    opacity: 1 !important;
+    transform: translateX(0) translateZ(0) rotateY(0) scale(1) !important;
+    z-index: 10;
   }
 }
 
@@ -1498,7 +1805,7 @@ p,
   display: flex;
   gap: 50px; /* Jarak antar kartu */
   overflow-x: auto;
-  padding: 0 20px 80px 20px; /* Padding bawah ekstra untuk efek 3D tilt */
+  padding: 0 10px 80px 20px; /* Padding bawah ekstra untuk efek 3D tilt */
   scrollbar-width: none; /* Sembunyikan scrollbar di Firefox */
 }
 .timeline-horizontal-container::-webkit-scrollbar {
@@ -1510,7 +1817,10 @@ p,
   position: relative;
   flex: 0 0 auto;
   width: 350px;
-  padding-top: 100px; /* Berubah dari 50px menjadi 100px (Memberi ruang lega di atas kartu) */
+  padding-top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Posisi Kartu Ganjil (Kanan) */
@@ -1582,8 +1892,9 @@ p,
   border-radius: 16px;
   padding: 50px 30px 40px;
   position: relative;
-  height: 100%;
+  height: auto;
   display: flex;
+  align-self: flex-start;
   flex-direction: column;
   /* KUNCI: Transisi cepat agar tidak delay dengan mouse, transform-style WAJIB ada */
   transition:
@@ -1606,7 +1917,7 @@ p,
 .date-badge {
   position: absolute;
   top: -25px; /* Menonjol ke luar batas atas kartu */
-  left: 30px;
+  left: 50% !important;
   background-color: #000000;
   border: 1px solid #e60000;
   box-shadow: 0 0 15px rgba(230, 0, 0, 0.3);
@@ -1614,7 +1925,8 @@ p,
   border-radius: 8px;
   text-align: center;
   z-index: 2;
-  transform: translateZ(20px); /* Efek pop-out 3D saat di-hover */
+  transform: translateX(-50%) translateZ(20px) !important;
+  transition: transform 0.3s ease;
 }
 
 .badge-subtitle {
@@ -1623,6 +1935,7 @@ p,
   font-weight: 700;
   color: #888888;
   letter-spacing: 1px;
+  text-align: justify;
 }
 
 .badge-title {
@@ -1630,6 +1943,7 @@ p,
   font-size: 1.2rem;
   font-weight: 900;
   color: #e60000;
+  text-align: justify;
 }
 
 /* Teks dalam kartu */
