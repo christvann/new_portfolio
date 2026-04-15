@@ -672,6 +672,18 @@ const handleSwipeGesture = () => {
   box-sizing: border-box;
 }
 
+strong {
+  font-weight: 700 !important;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  strong {
+    font-weight: 800 !important; 
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
 html,
 body {
   width: 100%;
