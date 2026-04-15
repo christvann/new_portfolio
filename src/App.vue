@@ -26,12 +26,12 @@
           >About</a
         >
         <a
-  href="#work"
-  @click="isMenuOpen = false; activeSection = 'work'"
-  :class="['nav-item', { active: activeSection === 'work' }]"
->
-  Work
-</a>
+          href="#work"
+          @click="isMenuOpen = false; activeSection = 'work'"
+          :class="['nav-item', { active: activeSection === 'work' }]"
+        >
+        Work
+        </a>
         <a
           href="#projects"
           @click="isMenuOpen = false"
@@ -63,11 +63,16 @@
         <h1 class="main-name">Ivan Christian</h1>
         <p class="bio">
           Informatics Engineering graduate from <strong>Institut Teknologi PLN</strong> with a GPA
-          of 3.50. Experienced as a Front-End Developer at PLN Icon Plus. Skilled in HTML, CSS,
-          JavaScript, Vue.js, React.js, Three.js and Tailwind CSS for building responsive and
-          scalable web applications, alongside a strong foundation in UI/UX design and Machine
-          Learning (CNN).
+          of 3.50. Experienced as a <strong>Front-End Developer at PLN Icon Plus</strong>. I specialize in
+          crafting high-performance, scalable web applications using <strong>Vue.js, React.js, and Tailwind CSS</strong>.
+          Beyond standard web development, I integrate <strong>Three.js</strong> for immersive 3D experiences and 
+          leverage a solid foundation in Machine Learning (CNN) to build intelligent, user-centric digital solutions. 
         </p>
+        <a href="/Ivan Christian Lado-resume.pdf" target="_blank" class="cv-button-glow">
+          <i class="fa-solid fa-folder id-icon-closed"></i>
+          <i class="fa-solid fa-folder-open id-icon-open"></i>
+          <span>Resume</span>
+        </a>
       </div>
 
       <div ref="canvasContainer" class="canvas-3d-container"></div>
@@ -795,6 +800,110 @@ body {
   display: flex;
   align-items: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* --- 1. TOMBOL CV (STRUKTUR UTAMA) --- */
+.cv-button-glow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 28px;
+  
+  background: rgba(20, 20, 20, 0.6);
+  border: 1px solid rgba(230, 0, 0, 0.3);
+  border-radius: 50px;
+  
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 1rem;
+  
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  
+  /* KUNCI: Supaya tidak terhalang Bola 3D */
+  z-index: 999 !important; 
+  cursor: pointer !important;
+  pointer-events: auto !important; 
+  
+  box-shadow: 0 0 10px rgba(230, 0, 0, 0.1);
+}
+
+/* --- 2. LOGIKA IKON (DEFAULT) --- */
+.cv-button-glow i {
+  font-size: 1.3rem;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+/* Sembunyikan folder terbuka di awal */
+.cv-button-glow .id-icon-open {
+  display: none !important;
+}
+
+/* Munculkan folder tertutup di awal */
+.cv-button-glow .id-icon-closed {
+  display: inline-block !important;
+}
+
+/* --- 3. EFEK HOVER (KURSOR MENYENTUH) --- */
+.cv-button-glow:hover {
+  background: rgba(30, 30, 30, 0.9);
+  border-color: #e60000;
+  color: #e60000; /* Teks jadi merah */
+  
+  box-shadow: 
+    0 0 25px rgba(230, 0, 0, 0.6), 
+    inset 0 0 10px rgba(230, 0, 0, 0.2);
+  
+  transform: translateY(-5px); /* Naik sedikit lebih tinggi */
+}
+
+/* TUKAR IKON SAAT HOVER */
+.cv-button-glow:hover .id-icon-closed {
+  display: none !important;
+}
+
+.cv-button-glow:hover .id-icon-open {
+  display: inline-block !important;
+  color: #e60000 !important;
+  animation: foldOut 0.4s forwards;
+}
+
+/* --- 4. PENYESUAIAN MOBILE --- */
+@media (max-width: 768px) {
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .cv-button-glow {
+    display: inline-flex;
+    margin: 20px auto 0;
+    padding: 12px 30px; 
+    font-size: 1rem;
+    gap: 10px;
+    z-index: 999 !important;
+    width: fit-content;
+  }
+  
+  .cv-button-glow i {
+    font-size: 1.1rem;
+  }
+}
+
+/* --- ANIMASI IKON TERBUKA --- */
+@keyframes foldOut {
+  0% { 
+    transform: scale(0.5) rotate(-15deg); 
+    opacity: 0; 
+  }
+  100% { 
+    transform: scale(1.1) rotate(0deg); 
+    opacity: 1; 
+  }
 }
 
 .nav-container {
