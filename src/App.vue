@@ -2005,10 +2005,12 @@ p,
 /* Kontainer untuk setiap item (Bagi 2 layar) */
 .timeline-horizontal-container {
   display: flex;
-  gap: 50px; /* Jarak antar kartu */
+  gap: 30px; /* Jarak antar kartu */
   overflow-x: auto;
-  padding: 0 10px 80px 20px; /* Padding bawah ekstra untuk efek 3D tilt */
+  padding: 0 100px 80px 20px; /* Padding bawah ekstra untuk efek 3D tilt */
   scrollbar-width: none; /* Sembunyikan scrollbar di Firefox */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 .timeline-horizontal-container::-webkit-scrollbar {
   display: none; /* Sembunyikan scrollbar di Chrome/Safari */
@@ -2019,10 +2021,12 @@ p,
   position: relative;
   flex: 0 0 auto;
   width: 350px;
+  box-sizing: border-box;
   padding-top: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: visible;
 }
 
 /* Posisi Kartu Ganjil (Kanan) */
